@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mike Null | Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+</head>
+<body>
+  <div id="blackout">
+    <img src="assets/edison_bulb.png" id="bulb" alt="Edison Bulb" />
+    <div id="pullstring"></div>
+  </div>
+
+  <main style="display: none;">
+    <header>
+      <h1>Mike Null</h1>
+      <nav>
+        <a href="#portfolio">Work</a>
+        <a href="#publications">Publications</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <section id="portfolio">
+      <h2>Portfolio</h2>
+      <div class="gallery">
+        <img src="assets/photos/placeholder1.jpg" alt="Placeholder 1" />
+        <img src="assets/photos/placeholder2.jpg" alt="Placeholder 2" />
+      </div>
+    </section>
+
+    <section id="publications">
+      <h2>Publications</h2>
+      <ul>
+        <li><a href="https://plsn.com/archives/november-2020/motionless-in-white-creatures-x-deadstream/" target="_blank">Motionless in White – Deadstream (PLSN)</a></li>
+        <li><a href="https://www.livedesignonline.com/news/ld-mike-null-sets-mood-elation-for-motionless-white-at-pennhurst-asylum" target="_blank">LD Mike Null – Live Design Online</a></li>
+        <li><a href="https://plsn.com/featured/featured-slider/chauvet-professional-channels-intensity-on-nothing-mores-spirits-tour/" target="_blank">Nothing More – Spirits Tour (PLSN)</a></li>
+        <li><a href="https://plsn.com/articles/showtime/in-this-moment/" target="_blank">In This Moment – Showtime (PLSN)</a></li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>Contact Me</h2>
+      <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="text" name="name" placeholder="Your name" required />
+        <input type="email" name="email" placeholder="Your email" required />
+        <textarea name="message" placeholder="Your message" required></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 Mike Null</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
