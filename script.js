@@ -1,3 +1,4 @@
+/*
 gsap.registerPlugin(Draggable);
 
 let unlocked = false;
@@ -21,3 +22,4 @@ Draggable.create("#pullstring", {
     }
   },
 });
+*/

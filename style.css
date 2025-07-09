@@ -243,3 +243,55 @@ body {
 .social-icon:hover {
   filter: invert(65%) sepia(87%) saturate(746%) hue-rotate(320deg) brightness(92%) contrast(91%);
 }
+
+#blackout {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease;
+}
+
+.bulb-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bulb {
+  width: 140px;
+  filter: none; /* bulb starts OFF */
+  transition: filter 0.5s;
+}
+
+.bulb.on {
+  animation: flicker 2s infinite alternate;
+  filter: drop-shadow(0 0 25px #ffd700);
+}
+
+@keyframes flicker {
+  0%   { opacity: 1; filter: drop-shadow(0 0 25px #ffd700); }
+  50%  { opacity: 0.6; filter: drop-shadow(0 0 10px #ffd700); }
+  100% { opacity: 1; filter: drop-shadow(0 0 30px #ffd700); }
+}
+
+#chain {
+  margin-top: -10px;
+  margin-left: 20px;
+  z-index: -1;
+}
+
+#pullHandle {
+  position: absolute;
+  margin-left: 20px;
+  top: 240px;
+  width: 12px;
+  height: 136px;
+  background: transparent;
+  cursor: grab;
+  z-index: 2;
+}

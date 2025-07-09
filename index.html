@@ -5,8 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mike Null | Portfolio</title>
   <link rel="stylesheet" href="style.css" />
+   <script src="script.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+
 </head>
 <body>
+<div id="blackout">
+  <div class="bulb-wrapper">
+    <img src="assets/old_edison_bulb.png" alt="Lightbulb" class="bulb" id="bulb" />
+
+    <svg id="chain" width="20" height="150" viewBox="0 0 20 150">
+      <g id="chainGroup" fill="none" stroke="#aaa" stroke-width="3">
+        <ellipse cx="10" cy="10" rx="6" ry="8"/>
+        <ellipse cx="10" cy="30" rx="6" ry="8"/>
+        <ellipse cx="10" cy="50" rx="6" ry="8"/>
+        <ellipse cx="10" cy="70" rx="6" ry="8"/>
+        <ellipse cx="10" cy="90" rx="6" ry="8"/>
+        <ellipse cx="10" cy="110" rx="6" ry="8"/>
+        <ellipse cx="10" cy="130" rx="6" ry="8"/>
+      </g>
+    </svg>
+
+    <div id="pullHandle"></div>
+  </div>
+</div>
+
+
   <div class="content-overlay">
     
     <header class="site-header">
@@ -184,6 +209,52 @@ function nextSlide() {
 setInterval(nextSlide, 3000);
 
   </script>
+ <script>
+  gsap.registerPlugin(Draggable);
+
+  let unlocked = false;
+
+  Draggable.create("#pullHandle", {
+    type: "y",
+    bounds: { minY: 0, maxY: 100 },
+    onDrag: function () {
+      const stretch = 1 + this.y / 100;
+      document.getElementById("chainGroup").setAttribute("transform", `scale(1, ${stretch})`);
+    },
+    onDragEnd: function () {
+      // Trigger if pulled far enough
+      if (this.y > 80 && !unlocked) {
+        unlocked = true;
+
+        // Turn on the bulb
+        document.getElementById("bulb").classList.add("on");
+
+        // Fade out blackout
+        gsap.to("#blackout", {
+          delay: 1,
+          opacity: 0,
+          duration: 1,
+          onComplete: () => {
+            document.getElementById("blackout").style.display = "none";
+            document.querySelector(".content-overlay").style.display = "block";
+          },
+        });
+      }
+
+      // Bounce back the chain
+      gsap.to("#chainGroup", {
+        duration: 0.5,
+        transform: "scale(1,1)",
+        ease: "elastic.out(1, 0.5)",
+      });
+
+      gsap.to(this.target, { y: 0, duration: 0.5 });
+    },
+  });
+</script>
+
+
+
   <footer class="site-footer">
   <a href="https://www.instagram.com/queen_city.ld/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
     <img src="assets/instagram_icon.png" alt="Instagram" class="social-icon" />
