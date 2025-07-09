@@ -7,6 +7,7 @@ body {
   background-size: cover;
   background-attachment: scroll;
   color: #fff;
+  font-family: 'Permanent Marker' ;
 }
 
 .content-overlay {
@@ -33,6 +34,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  word-wrap:normal;
 }
 
 .site-header .logo {
@@ -64,6 +66,7 @@ body {
 .hero-content {
   font-size: 3rem;
   color: white;
+  font-weight: bold;
 }
 
 .scroll-cue {
@@ -79,6 +82,13 @@ body {
 }
 
 /* Portfolio Grid */
+#portfolio h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+
+}
+
 .portfolio-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -213,9 +223,9 @@ body {
   width: auto;  /* adjust size as needed */
   height: 438px; /* keep 4:3 aspect ratio */
   overflow: hidden;
-  border: 3px solid #ffd700;
+  border: 3px solid #ffc400a2;
   border-radius: 8px;
-  box-shadow: 0 0 10px #ffd700;
+  box-shadow: 0 0 10px #ffc400a2;
 }
 
 .hero-slideshow img {
@@ -295,3 +305,32 @@ body {
   cursor: grab;
   z-index: 2;
 }
+
+.permanent-marker-regular {
+  font-family: "Permanent Marker", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.lb-image {
+  max-width: 90vw !important;
+  max-height: 80vh !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+
+.lb-outerContainer {
+ 
+  max-width: 90vw !important;
+  max-height: 80vh !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #000; /* optional dark background */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+

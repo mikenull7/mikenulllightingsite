@@ -8,6 +8,16 @@
    <script src="script.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Draggable.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Orbitron:wght@500&family=Playfair+Display&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
+
+
+
 
 </head>
 <body>
@@ -41,13 +51,14 @@
           <a href="#portfolio">Work</a>
           <a href="#publications">Publications</a>
           <a href="#contact">Contact</a>
+          
         </nav>
       </div>
     </header>
 
     <section class="hero">
       <div class="hero-content">
-        MIKE NULL LIGHTING
+        
        <div class="hero-slideshow">
   <img id="slideshow-image" src="assets/photos/miw_1.png" alt="Slideshow image" />
 </div>
@@ -59,49 +70,62 @@
       <h2>Portfolio</h2>
       <div class="portfolio-grid">
         <!-- Your 6 images here -->
-        <a href="assets/photos/miw_1.png" data-lightbox="gallery" data-title="Motionless In White">
+        <a href="assets/photos/miw_1.png" data-lightbox="portfolio" data-title="Motionless In White">
           <div class="image-container">
             <img src="assets/photos/miw_1.png" alt="miw_1" />
             <span class="overlay">Motionless In White</span>
           </div>
         </a>
         <!-- Repeat for other images -->
-          <a href="assets/photos/miw_2.png" data-lightbox="gallery" data-title="Motionless In White">
+          <a href="assets/photos/miw_2.png" data-lightbox="portfolio" data-title="Motionless In White">
           <div class="image-container">
             <img src="assets/photos/miw_2.png" alt="miw_2" />
             <span class="overlay">Motionless In White</span>
           </div>
         </a>
-         <a href="assets/photos/ab_keys.png" data-lightbox="gallery" data-title="Alec Benjamin">
+         <a href="assets/photos/ab_keys.png" data-lightbox="portfolio" data-title="Alec Benjamin">
           <div class="image-container">
             <img src="assets/photos/ab_keys.png" alt="ab_keys" />
             <span class="overlay">Alec Benjamin</span>
           </div>
         </a>
-         <a href="assets/photos/ab_rah.png" data-lightbox="gallery" data-title="Alec Benjamin">
+         <a href="assets/photos/ab_rah.png" data-lightbox="portfolio" data-title="Alec Benjamin">
           <div class="image-container">
             <img src="assets/photos/ab_rah.png" alt="ab_rah" />
             <span class="overlay">Alec Benjamin</span>
           </div>
         </a>
-         <a href="assets/photos/itm_1.png" data-lightbox="gallery" data-title="In This Moment">
+         <a href="assets/photos/itm_1.png" data-lightbox="portfolio" data-title="In This Moment">
           <div class="image-container">
             <img src="assets/photos/itm_1.png" alt="itm_1" />
             <span class="overlay">In This Moment</span>
           </div>
         </a>
-         <a href="assets/photos/Nomo_1.png" data-lightbox="gallery" data-title="Nothing More">
+         <a href="assets/photos/Nomo_1.png" data-lightbox="portfolio" data-title="Nothing More">
           <div class="image-container">
             <img src="assets/photos/Nomo_1.png" alt="Nomo_1" />
             <span class="overlay">Nothing More</span>
           </div>
         </a>
-         <a href="assets/photos/ptv.png" data-lightbox="gallery" data-title="Pierce the Veil">
+         <a href="assets/photos/ptv.png" data-lightbox="portfolio" data-title="Pierce the Veil">
           <div class="image-container">
             <img src="assets/photos/ptv.png" alt="ptv" />
             <span class="overlay">Pierce the Veil</span>
           </div>
         </a>
+         <a href="assets/photos/soty1.png" data-lightbox="portfolio" data-title="Story of the Year">
+          <div class="image-container">
+            <img src="assets/photos/soty1.png" alt="soty1" />
+            <span class="overlay">Story of the Year</span>
+          </div>
+        </a>
+         <a href="assets/photos/nomoss1.png" data-lightbox="portfolio" data-title="Nothing More">
+          <div class="image-container">
+            <img src="assets/photos/nomoss1.png" alt="nomoss1" />
+            <span class="overlay">Nothing More</span>
+          </div>
+        </a>
+
 
 
 
@@ -141,6 +165,7 @@
     </li>
   </ul>
 </section>
+<!-- CONTACT FORM -->
 <section id="contact">
   <h2>Contact</h2>
   <form class="contact-form" action="https://formspree.io/f/mblyvzan" method="POST">
@@ -189,7 +214,12 @@
   "assets/photos/ab_rah.png",
   "assets/photos/itm_1.png",
   "assets/photos/Nomo_1.png",
-  "assets/photos/ptv.png"
+  "assets/photos/ptv.png",
+  "assets/photos/soty1.png",
+  "assets/photos/itmss1.png",
+  "assets/photos/itmss2.png",
+  "assets/photos/itmss3.png",
+  "assets/photos/nomoss1.png"
 ];
 
 let currentIndex = 0;
@@ -260,6 +290,42 @@ setInterval(nextSlide, 3000);
     <img src="assets/instagram_icon.png" alt="Instagram" class="social-icon" />
   </a>
 </footer>
+<!-- jQuery (required by Lightbox2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Lightbox2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+
+<script>
+  lightbox.option({
+    resizeDuration: 0,
+    wrapAround: true,
+    fadeDuration: 300,
+    imageFadeDuration: 300
+  });
+
+  // Re-apply container lock after every image change
+  document.addEventListener("DOMContentLoaded", function () {
+    document.body.addEventListener("lightbox:change", () => {
+      setTimeout(() => {
+        const container = document.querySelector(".lb-outerContainer");
+        const image = document.querySelector(".lb-image");
+        if (container && image) {
+          container.style.width = "90vw";
+          container.style.height = "80vh";
+          container.style.maxWidth = "90vw";
+          container.style.maxHeight = "80vh";
+          image.style.maxWidth = "100%";
+          image.style.maxHeight = "100%";
+          image.style.objectFit = "contain";
+        }
+      }, 50); // Wait for lightbox resize before overriding it
+    });
+  });
+</script>
+
+
+
 
 </body>
 </html>
