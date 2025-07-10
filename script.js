@@ -58,21 +58,28 @@ gsap.registerPlugin(Draggable);
 let unlocked = false;
 
 Draggable.create("#pullHandle", {
-  type: "y",
-  bounds: { minY: 0, maxY: 100 },
+  type: "x,y",
+  bounds: { minX: -30, maxX: 30, minY: 0, maxY: 100 },
   onDrag: function () {
     const stretch = 1 + this.y / 100;
+    const rotateAmount = -this.x * 0.5; // Negate here
     document
       .getElementById("chainGroup")
-      .setAttribute("transform", `scale(1, ${stretch})`);
+      .setAttribute(
+        "transform",
+        `scale(1, ${stretch}) rotate(${rotateAmount}, 10, 0)`
+      );
   },
   onDragEnd: function () {
     if (this.y > 80 && !unlocked) {
       unlocked = true;
+
+      // Turn on the bulb
       document.getElementById("bulb").classList.add("on");
 
+      // Fade out blackout
       gsap.to("#blackout", {
-        delay: 2,
+        delay: 1,
         opacity: 0,
         duration: 1,
         onComplete: () => {
@@ -82,13 +89,32 @@ Draggable.create("#pullHandle", {
       });
     }
 
+    // Bounce back vertically with elastic ease
+    gsap.to(this.target, {
+      y: 0,
+      duration: 0.6,
+      ease: "elastic.out(1, 0.5)",
+    });
+
+    // Bounce the chain scale back
     gsap.to("#chainGroup", {
-      duration: 0.5,
+      duration: 0.6,
       transform: "scale(1,1)",
       ease: "elastic.out(1, 0.5)",
     });
 
-    gsap.to(this.target, { y: 0, duration: 0.5 });
+    // Add sway: slight horizontal shake
+    gsap.fromTo(
+      "#chainGroup",
+      { x: -10 },
+      {
+        x: 10,
+        duration: 0.4,
+        ease: "sine.inOut",
+        repeat: 3,
+        yoyo: true,
+      }
+    );
   },
 });
 

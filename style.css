@@ -311,8 +311,8 @@ body {
 
 #chain {
   position:relative;
-  left: 10px;
-  margin-top: -10px;
+  left: 50px;
+  margin-top: -20px;
   margin-left: 0px;
   z-index: -1;
 }
@@ -379,3 +379,4 @@ body {
 .logo a:hover {
   color: #ffd700;
 }
+
