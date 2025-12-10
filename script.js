@@ -142,3 +142,87 @@ AOS.init({
   duration: 800,
   once: false,
 });
+
+// -------------------------------------------------------------
+//  TAP-TO-TURN-ON LOGIC FOR BULB + CHAIN
+// -------------------------------------------------------------
+
+function triggerPullAnimation() {
+  if (unlocked) return; // avoid double triggers
+  unlocked = true;
+
+  // Animate pull down
+  gsap.to("#pullHandle", {
+    y: 80,
+    duration: 0.2,
+    ease: "power2.out",
+    onComplete: () => {
+      // Bounce back up
+      gsap.to("#pullHandle", {
+        y: 0,
+        duration: 0.6,
+        ease: "elastic.out(1, 0.5)",
+      });
+
+      // Sway animation
+      gsap.fromTo(
+        "#chainGroup",
+        { x: -10 },
+        {
+          x: 10,
+          duration: 0.4,
+          ease: "sine.inOut",
+          repeat: 3,
+          yoyo: true,
+        }
+      );
+    },
+  });
+
+  // Turn on the bulb
+  document.getElementById("bulb").classList.add("on");
+
+  // Fade out blackout
+  gsap.to("#blackout", {
+    delay: 0.8,
+    opacity: 0,
+    duration: 1,
+    onComplete: () => {
+      document.getElementById("blackout").style.display = "none";
+      document.querySelector(".content-overlay").style.display = "block";
+    },
+  });
+}
+
+// Tap on bulb → activate
+document.getElementById("bulb").addEventListener("click", triggerPullAnimation);
+
+// Tap on chain → activate (your chain SVG group)
+document
+  .getElementById("chain")
+  .addEventListener("click", triggerPullAnimation);
+
+// Lightbox resize control
+document.addEventListener("DOMContentLoaded", function () {
+  document.body.addEventListener("lightbox:change", () => {
+    setTimeout(() => {
+      const container = document.querySelector(".lb-outerContainer");
+      const image = document.querySelector(".lb-image");
+      if (container && image) {
+        container.style.width = "90vw";
+        container.style.height = "80vh";
+        container.style.maxWidth = "90vw";
+        container.style.maxHeight = "80vh";
+        image.style.maxWidth = "100%";
+        image.style.maxHeight = "100%";
+        image.style.objectFit = "contain";
+      }
+    }, 50);
+  });
+});
+
+// AOS scroll animation
+AOS.init({
+  duration: 800,
+  once: false,
+});

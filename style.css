@@ -218,6 +218,15 @@ body {
   background-color: #e6c200;
 }
 
+#resume{
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #fff;
+  justify-content: center;
+}
+
+
 .hero-slideshow {
   margin-top: 1.5rem;
   width: auto;  /* adjust size as needed */
