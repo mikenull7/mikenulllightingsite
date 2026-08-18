@@ -470,7 +470,7 @@ body {
 
   .bulb-wrapper {
     width: 180px;
-    height: 430px;
+    height: 380px;
   }
 
   .bulb {
@@ -481,10 +481,11 @@ body {
   }
 
   #chain {
+    position: absolute;
     top: 0px;
-    left: 100px;
+    left: 105px;
 
-    width: 140px;
+    width: 100px;
     height: 600px;
 
     touch-action: none;
@@ -494,8 +495,7 @@ body {
   }
 
   #chainGroup {
-  transform-origin: 10px 10px;
-  transform: translateY(-80px);
+  transform: translateY(-150px);
   z-index: -10;
 }
 }
