@@ -1,13 +1,21 @@
-// Smooth scrolling for anchor links
+// =============================================================
+// SMOOTH SCROLLING
+// =============================================================
+
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
+
     const targetId = this.getAttribute("href");
 
     if (targetId === "#" || targetId === "#top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     } else {
       const target = document.querySelector(targetId);
+
       if (target) {
         window.scrollTo({
           top: target.offsetTop - 80,
@@ -18,10 +26,18 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// Force scroll to top on reload
-window.onload = () => window.scrollTo(0, 0);
+// =============================================================
+// FORCE SCROLL TO TOP ON RELOAD
+// =============================================================
 
-// Slideshow logic
+window.onload = () => {
+  window.scrollTo(0, 0);
+};
+
+// =============================================================
+// SLIDESHOW
+// =============================================================
+
 const slideshowImages = [
   "assets/photos/miw_1.png",
   "assets/photos/miw_2.png",
@@ -38,59 +54,116 @@ const slideshowImages = [
 ];
 
 let currentIndex = 0;
+
 const slideshowImageEl = document.getElementById("slideshow-image");
 
 function nextSlide() {
+  if (!slideshowImageEl) return;
+
   currentIndex = (currentIndex + 1) % slideshowImages.length;
+
   slideshowImageEl.style.opacity = 0;
 
   setTimeout(() => {
     slideshowImageEl.src = slideshowImages[currentIndex];
+
     slideshowImageEl.style.opacity = 1;
   }, 500);
 }
 
 setInterval(nextSlide, 3000);
 
-// Lightbulb chain logic
-// -------------------------------------------------------------
-// LIGHTBULB CHAIN LOGIC
-// -------------------------------------------------------------
+// =============================================================
+// LIGHTBULB + PULL CHAIN
+// =============================================================
 
 gsap.registerPlugin(Draggable);
 
 let unlocked = false;
 
 const chainGroup = document.getElementById("chainGroup");
-const pullHandle = document.getElementById("pullHandle");
 
-// Get all 14 chain rings
+const chain = document.getElementById("chain");
+
+const bulb = document.getElementById("bulb");
+
+const blackout = document.getElementById("blackout");
+
+const contentOverlay = document.querySelector(".content-overlay");
+
+// =============================================================
+// GET ALL CHAIN LINKS
+// =============================================================
+
 const chainLinks = [...chainGroup.querySelectorAll("ellipse")];
 
-// Remember their original positions
+// =============================================================
+// REMEMBER ORIGINAL LINK POSITIONS
+// =============================================================
+
 const originalLinks = chainLinks.map((link) => ({
   cx: parseFloat(link.getAttribute("cx")),
   cy: parseFloat(link.getAttribute("cy")),
 }));
 
-// -------------------------------------------------------------
-// DEFORM THE CHAIN
-// -------------------------------------------------------------
+// =============================================================
+// CURRENT DRAG VALUES
+// =============================================================
+//
+// We keep these separate from the SVG.
+//
+// The SVG itself NEVER gets translated.
+//
+
+let currentPull = 0;
+let currentSway = 0;
+
+// =============================================================
+// DEFORM CHAIN
+// =============================================================
+//
+// TOP LINK = COMPLETELY ANCHORED
+//
+// Bottom links progressively move farther.
+//
+// This creates the effect of a real hanging chain.
+//
 
 function updateChain(pull, sway = 0) {
+  if (!chainLinks.length) return;
+
   chainLinks.forEach((link, i) => {
-    // 0 = top of chain
-    // 1 = bottom of chain
+    // ---------------------------------------------------------
+    // POSITION ALONG CHAIN
+    // ---------------------------------------------------------
+
     const progress = i / (chainLinks.length - 1);
 
-    // Bottom gets progressively more movement.
+    // ---------------------------------------------------------
+    // WEIGHT / FLEX
+    // ---------------------------------------------------------
+    //
+    // Top barely moves.
+    // Bottom moves the most.
+    //
+
     const weight = Math.pow(progress, 1.7);
 
-    // Vertical movement
+    // ---------------------------------------------------------
+    // VERTICAL POSITION
+    // ---------------------------------------------------------
+
     const y = originalLinks[i].cy + pull * weight;
 
-    // Horizontal movement
+    // ---------------------------------------------------------
+    // HORIZONTAL POSITION
+    // ---------------------------------------------------------
+
     const x = originalLinks[i].cx + sway * weight;
+
+    // ---------------------------------------------------------
+    // APPLY ONLY TO THIS LINK
+    // ---------------------------------------------------------
 
     link.setAttribute(
       "transform",
@@ -102,21 +175,69 @@ function updateChain(pull, sway = 0) {
   });
 }
 
-// -------------------------------------------------------------
+// =============================================================
 // RESET CHAIN
-// -------------------------------------------------------------
+// =============================================================
 
 function resetChain() {
   chainLinks.forEach((link) => {
     link.removeAttribute("transform");
   });
+
+  currentPull = 0;
+  currentSway = 0;
 }
 
-// -------------------------------------------------------------
-// DRAGGING
-// -------------------------------------------------------------
+// =============================================================
+// TURN LIGHT ON
+// =============================================================
 
-Draggable.create("#pullHandle", {
+function turnLightOn() {
+  if (unlocked) {
+    return;
+  }
+
+  unlocked = true;
+
+  // -----------------------------------------------------------
+  // BULB ON
+  // -----------------------------------------------------------
+
+  bulb.classList.add("on");
+
+  // -----------------------------------------------------------
+  // FADE BLACKOUT
+  // -----------------------------------------------------------
+
+  gsap.to(blackout, {
+    delay: 1,
+    opacity: 0,
+    duration: 1,
+
+    onComplete: () => {
+      blackout.style.display = "none";
+
+      if (contentOverlay) {
+        contentOverlay.style.display = "block";
+      }
+    },
+  });
+}
+
+// =============================================================
+// CHAIN DRAGGING
+// =============================================================
+//
+// IMPORTANT:
+//
+// The SVG is ONLY the hitbox.
+//
+// GSAP is NOT allowed to visually move the SVG.
+//
+// We measure the drag and deform the individual chain links.
+//
+
+Draggable.create(chain, {
   type: "x,y",
 
   bounds: {
@@ -126,11 +247,47 @@ Draggable.create("#pullHandle", {
     maxY: 100,
   },
 
-  onDrag: function () {
-    const pull = this.y;
-    const sway = this.x;
+  // -----------------------------------------------------------
+  // PRESS
+  // -----------------------------------------------------------
 
-    updateChain(pull, sway);
+  onPress: function () {
+    // Stop any previous spring animation.
+
+    gsap.killTweensOf(this.target);
+
+    currentPull = 0;
+    currentSway = 0;
+  },
+
+  // -----------------------------------------------------------
+  // DRAG
+  // -----------------------------------------------------------
+
+  onDrag: function () {
+    // Read the user's drag.
+
+    currentPull = this.y;
+    currentSway = this.x;
+
+    // Deform the actual links.
+
+    updateChain(currentPull, currentSway);
+
+    // ---------------------------------------------------------
+    // CRITICAL
+    // ---------------------------------------------------------
+    //
+    // Immediately return the SVG hitbox to its
+    // original position.
+    //
+    // This prevents the entire chain from moving.
+    //
+
+    gsap.set(this.target, {
+      x: 0,
+      y: 0,
+    });
   },
 
   // -----------------------------------------------------------
@@ -138,159 +295,122 @@ Draggable.create("#pullHandle", {
   // -----------------------------------------------------------
 
   onDragEnd: function () {
-    // User pulled far enough to turn the light on
-    if (this.y > 80 && !unlocked) {
-      unlocked = true;
+    // Save the last drag values.
+    //
+    // Do NOT use this.y here because the SVG is
+    // immediately returned to zero.
 
-      // Turn on bulb
-      document.getElementById("bulb").classList.add("on");
+    const releaseY = currentPull;
+    const releaseX = currentSway;
 
-      // Fade out blackout
-      gsap.to("#blackout", {
-        delay: 1,
-        opacity: 0,
-        duration: 1,
+    // ---------------------------------------------------------
+    // TURN LIGHT ON
+    // ---------------------------------------------------------
 
-        onComplete: () => {
-          document.getElementById("blackout").style.display = "none";
-          document.querySelector(".content-overlay").style.display = "block";
-        },
-      });
+    if (releaseY > 80 && !unlocked) {
+      turnLightOn();
     }
 
     // ---------------------------------------------------------
-    // SPRING HANDLE BACK
+    // SPRING BACK
     // ---------------------------------------------------------
+    //
+    // Dummy object.
+    //
+    // The SVG itself does NOT move.
+    //
+    // Only the individual links deform.
 
-    gsap.to(this.target, {
-      x: 0,
-      y: 0,
+    const spring = {
+      pull: releaseY,
+      sway: releaseX,
+    };
 
-      duration: 2.0,
+    gsap.to(spring, {
+      pull: 0,
+      sway: 0,
 
-      ease: "elastic.out(5, 0.22)",
+      // Long enough to see the chain fly back.
+
+      duration: 4,
+
+      // Strong physical-looking overshoot.
+
+      ease: "elastic.out(10, .2)",
+
+      // -------------------------------------------------------
+      // UPDATE CHAIN DURING SPRING
+      // -------------------------------------------------------
 
       onUpdate: () => {
-        const pull = Number(gsap.getProperty(this.target, "y")) || 0;
-
-        const sway = Number(gsap.getProperty(this.target, "x")) || 0;
-
-        updateChain(pull, sway);
+        updateChain(spring.pull, spring.sway);
       },
+
+      // -------------------------------------------------------
+      // COMPLETE
+      // -------------------------------------------------------
 
       onComplete: () => {
         resetChain();
+
         updateChain(0, 0);
       },
     });
   },
 });
 
-// Lightbox resize control
-document.addEventListener("DOMContentLoaded", function () {
-  document.body.addEventListener("lightbox:change", () => {
-    setTimeout(() => {
-      const container = document.querySelector(".lb-outerContainer");
-      const image = document.querySelector(".lb-image");
-      if (container && image) {
-        container.style.width = "90vw";
-        container.style.height = "80vh";
-        container.style.maxWidth = "90vw";
-        container.style.maxHeight = "80vh";
-        image.style.maxWidth = "100%";
-        image.style.maxHeight = "100%";
-        image.style.objectFit = "contain";
-      }
-    }, 50);
-  });
-});
+// =============================================================
+// BULB TAP / CLICK
+// =============================================================
+//
+// The bulb can still be clicked or tapped.
+//
 
-// AOS scroll animation
-AOS.init({
-  duration: 800,
-  once: false,
-});
-
-// -------------------------------------------------------------
-//  TAP-TO-TURN-ON LOGIC FOR BULB + CHAIN
-// -------------------------------------------------------------
-
-function triggerPullAnimation() {
-  if (unlocked) return; // avoid double triggers
-  unlocked = true;
-
-  // Animate pull down
-  gsap.to("#pullHandle", {
-    y: 80,
-    duration: 0.2,
-    ease: "power2.out",
-    onComplete: () => {
-      // Bounce back up
-      gsap.to("#pullHandle", {
-        y: 0,
-        duration: 0.6,
-        ease: "elastic.out(1, 0.5)",
-      });
-
-      // Sway animation
-      gsap.fromTo(
-        "#chainGroup",
-        { x: -10 },
-        {
-          x: 10,
-          duration: 0.4,
-          ease: "sine.inOut",
-          repeat: 3,
-          yoyo: true,
-        },
-      );
-    },
-  });
-
-  // Turn on the bulb
-  document.getElementById("bulb").classList.add("on");
-
-  // Fade out blackout
-  gsap.to("#blackout", {
-    delay: 0.8,
-    opacity: 0,
-    duration: 1,
-    onComplete: () => {
-      document.getElementById("blackout").style.display = "none";
-      document.querySelector(".content-overlay").style.display = "block";
-    },
+if (bulb) {
+  bulb.addEventListener("click", () => {
+    turnLightOn();
   });
 }
 
-// Tap on bulb → activate
-document.getElementById("bulb").addEventListener("click", triggerPullAnimation);
+// =============================================================
+// LIGHTBOX RESIZE
+// =============================================================
 
-// Tap on chain → activate (your chain SVG group)
-document
-  .getElementById("chain")
-  .addEventListener("click", triggerPullAnimation);
-
-// Lightbox resize control
 document.addEventListener("DOMContentLoaded", function () {
   document.body.addEventListener("lightbox:change", () => {
     setTimeout(() => {
       const container = document.querySelector(".lb-outerContainer");
+
       const image = document.querySelector(".lb-image");
+
       if (container && image) {
         container.style.width = "90vw";
+
         container.style.height = "80vh";
+
         container.style.maxWidth = "90vw";
+
         container.style.maxHeight = "80vh";
+
         image.style.maxWidth = "100%";
+
         image.style.maxHeight = "100%";
+
         image.style.objectFit = "contain";
       }
     }, 50);
   });
 });
 
-// AOS scroll animation
+// =============================================================
+// AOS SCROLL ANIMATION
+// =============================================================
+
 AOS.init({
   duration: 800,
   once: false,
 });
+
+// =============================================================
+// END
+// =============================================================

@@ -304,29 +304,57 @@ body {
 
 .bulb-wrapper {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+  width: 180px;
+  height: 380px;
+
+  display: block;
 }
 
 .bulb-glow {
   position: absolute;
-  top: 15%;
+
+  top: 35%;
+  left:35%;
+
   width: 60px;
   height: 60px;
-  background: radial-gradient(circle, #ffd700 0%, transparent 100%);
+
+  background: radial-gradient(
+    circle,
+    #ffd700 0%,
+    transparent 100%
+  );
+
   border-radius: 50%;
+
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
+
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+
   z-index: 0;
+
   filter: blur(12px);
 }
 
 .bulb {
+  position: absolute;
+
+  top: 0;
+  left: 20px;
+
   width: 140px;
-  filter: none; /* bulb starts OFF */
+
+  filter: none;
+
   transition: filter 0.5s;
+
+  transform: rotate(180deg);
+
+  z-index: 2;
 }
 
 .bulb.on + .bulb-glow {
@@ -347,16 +375,26 @@ body {
 }
 
 #chain {
-  position: relative;
-  left: 50px;
-  margin-top: -20px;
-  margin-left: 0;
-  z-index: -1;
+  position: absolute;
+
+  top: -50px;
+  left: 105px;
+
+  margin: 0;
+
+  width: 100px;
+  height: 400px;
+
+  z-index: 1;
 
   overflow: visible;
 
   cursor: grab;
+
   touch-action: none;
+
+  user-select: none;
+  -webkit-user-select: none;
 
   transform-origin: 10px 10px;
 }
@@ -367,18 +405,10 @@ body {
 
 #chainGroup {
   transform-origin: 10px 10px;
+  pointer-events: none;
 }
 
-#pullHandle {
-  position: absolute;
-  margin-left: 20px;
-  top: 240px;
-  width: 12px;
-  height: 136px;
-  background: transparent;
-  cursor: grab;
-  z-index: 2;
-}
+
 
 .permanent-marker-regular {
   font-family: "Permanent Marker", cursive;
