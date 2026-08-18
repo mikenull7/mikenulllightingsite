@@ -481,15 +481,21 @@ body {
   }
 
   #chain {
-    top: 105px;
-    left: 70px;
+    top: 0px;
+    left: 100px;
 
     width: 140px;
-    height: 380px;
+    height: 600px;
 
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
   }
+
+  #chainGroup {
+  transform-origin: 10px 10px;
+  transform: translateY(-80px);
+  z-index: -10;
+}
 }
