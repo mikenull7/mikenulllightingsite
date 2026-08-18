@@ -462,3 +462,34 @@ body {
   color: #ffd700;
 }
 
+/* =========================================================
+   MOBILE PULL-CHAIN FIX
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .bulb-wrapper {
+    width: 180px;
+    height: 430px;
+  }
+
+  .bulb {
+    top: 0;
+    left: 20px;
+    width: 140px;
+    transform: rotate(180deg);
+  }
+
+  #chain {
+    top: 105px;
+    left: 70px;
+
+    width: 140px;
+    height: 380px;
+
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
