@@ -347,11 +347,26 @@ body {
 }
 
 #chain {
-  position:relative;
+  position: relative;
   left: 50px;
   margin-top: -20px;
-  margin-left: 0px;
+  margin-left: 0;
   z-index: -1;
+
+  overflow: visible;
+
+  cursor: grab;
+  touch-action: none;
+
+  transform-origin: 10px 10px;
+}
+
+#chain:active {
+  cursor: grabbing;
+}
+
+#chainGroup {
+  transform-origin: 10px 10px;
 }
 
 #pullHandle {

@@ -53,28 +53,96 @@ function nextSlide() {
 setInterval(nextSlide, 3000);
 
 // Lightbulb chain logic
+// -------------------------------------------------------------
+// LIGHTBULB CHAIN LOGIC
+// -------------------------------------------------------------
+
 gsap.registerPlugin(Draggable);
 
 let unlocked = false;
 
+const chainGroup = document.getElementById("chainGroup");
+const pullHandle = document.getElementById("pullHandle");
+
+// Get all 14 chain rings
+const chainLinks = [...chainGroup.querySelectorAll("ellipse")];
+
+// Remember their original positions
+const originalLinks = chainLinks.map((link) => ({
+  cx: parseFloat(link.getAttribute("cx")),
+  cy: parseFloat(link.getAttribute("cy")),
+}));
+
+// -------------------------------------------------------------
+// DEFORM THE CHAIN
+// -------------------------------------------------------------
+
+function updateChain(pull, sway = 0) {
+  chainLinks.forEach((link, i) => {
+    // 0 = top of chain
+    // 1 = bottom of chain
+    const progress = i / (chainLinks.length - 1);
+
+    // Bottom gets progressively more movement.
+    const weight = Math.pow(progress, 1.7);
+
+    // Vertical movement
+    const y = originalLinks[i].cy + pull * weight;
+
+    // Horizontal movement
+    const x = originalLinks[i].cx + sway * weight;
+
+    link.setAttribute(
+      "transform",
+      `translate(
+        ${x - originalLinks[i].cx}
+        ${y - originalLinks[i].cy}
+      )`,
+    );
+  });
+}
+
+// -------------------------------------------------------------
+// RESET CHAIN
+// -------------------------------------------------------------
+
+function resetChain() {
+  chainLinks.forEach((link) => {
+    link.removeAttribute("transform");
+  });
+}
+
+// -------------------------------------------------------------
+// DRAGGING
+// -------------------------------------------------------------
+
 Draggable.create("#pullHandle", {
   type: "x,y",
-  bounds: { minX: -30, maxX: 30, minY: 0, maxY: 100 },
-  onDrag: function () {
-    const stretch = 1 + this.y / 100;
-    const rotateAmount = -this.x * 0.5; // Negate here
-    document
-      .getElementById("chainGroup")
-      .setAttribute(
-        "transform",
-        `scale(1, ${stretch}) rotate(${rotateAmount}, 10, 0)`
-      );
+
+  bounds: {
+    minX: -30,
+    maxX: 30,
+    minY: 0,
+    maxY: 100,
   },
+
+  onDrag: function () {
+    const pull = this.y;
+    const sway = this.x;
+
+    updateChain(pull, sway);
+  },
+
+  // -----------------------------------------------------------
+  // RELEASE
+  // -----------------------------------------------------------
+
   onDragEnd: function () {
+    // User pulled far enough to turn the light on
     if (this.y > 80 && !unlocked) {
       unlocked = true;
 
-      // Turn on the bulb
+      // Turn on bulb
       document.getElementById("bulb").classList.add("on");
 
       // Fade out blackout
@@ -82,6 +150,7 @@ Draggable.create("#pullHandle", {
         delay: 1,
         opacity: 0,
         duration: 1,
+
         onComplete: () => {
           document.getElementById("blackout").style.display = "none";
           document.querySelector(".content-overlay").style.display = "block";
@@ -89,32 +158,31 @@ Draggable.create("#pullHandle", {
       });
     }
 
-    // Bounce back vertically with elastic ease
+    // ---------------------------------------------------------
+    // SPRING HANDLE BACK
+    // ---------------------------------------------------------
+
     gsap.to(this.target, {
+      x: 0,
       y: 0,
-      duration: 0.6,
-      ease: "elastic.out(1, 0.5)",
-    });
 
-    // Bounce the chain scale back
-    gsap.to("#chainGroup", {
-      duration: 0.6,
-      transform: "scale(1,1)",
-      ease: "elastic.out(1, 0.5)",
-    });
+      duration: 2.0,
 
-    // Add sway: slight horizontal shake
-    gsap.fromTo(
-      "#chainGroup",
-      { x: -10 },
-      {
-        x: 10,
-        duration: 0.4,
-        ease: "sine.inOut",
-        repeat: 3,
-        yoyo: true,
-      }
-    );
+      ease: "elastic.out(5, 0.22)",
+
+      onUpdate: () => {
+        const pull = Number(gsap.getProperty(this.target, "y")) || 0;
+
+        const sway = Number(gsap.getProperty(this.target, "x")) || 0;
+
+        updateChain(pull, sway);
+      },
+
+      onComplete: () => {
+        resetChain();
+        updateChain(0, 0);
+      },
+    });
   },
 });
 
@@ -174,7 +242,7 @@ function triggerPullAnimation() {
           ease: "sine.inOut",
           repeat: 3,
           yoyo: true,
-        }
+        },
       );
     },
   });
