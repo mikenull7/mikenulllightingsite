@@ -403,6 +403,24 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // =============================================================
+// MA NOTEBOOK DOWNLOAD TRACKING
+// =============================================================
+
+const pluginDownload = document.getElementById("plugin-download");
+
+if (pluginDownload) {
+  pluginDownload.addEventListener("click", () => {
+    if (typeof gtag === "function") {
+      gtag("event", "plugin_download", {
+        plugin_name: "MA Notebook",
+        plugin_version: "1.0",
+        file_name: "MANoteBook.xml",
+      });
+    }
+  });
+}
+
+// =============================================================
 // AOS SCROLL ANIMATION
 // =============================================================
 
